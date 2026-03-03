@@ -137,7 +137,7 @@ export default function MorePage() {
     switch (type) {
       case "explain_monthly": return "Verse Explain";
       case "summary_annual": return "Summary Pass";
-      case "premium_annual": return "Premium";
+      case "premium_annual": return "Unlimited";
       default: return type;
     }
   }

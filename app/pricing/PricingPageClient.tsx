@@ -193,7 +193,7 @@ export default function PricingPageClient() {
           </div>
         ) : (
           <div className="space-y-4">
-            {/* ⭐ Premium Tier — highlighted */}
+            {/* ⭐ Unlimited Tier — highlighted */}
             <div
               className="rounded-xl p-5 relative"
               style={{
@@ -223,11 +223,11 @@ export default function PricingPageClient() {
                 </div>
                 <div className="flex items-baseline justify-between mb-1">
                 <h3 className="text-[18px] font-bold" style={{ color: "var(--foreground)" }}>
-                  ClearBible Premium
+                  ClearBible Unlimited
                 </h3>
               </div>
               <p className="text-[13px] mb-4" style={{ color: "var(--foreground-secondary)" }}>
-                Everything included — one simple price
+                Summaries, AI explanations, audio, and every future feature
               </p>
 
               <div
@@ -280,7 +280,7 @@ export default function PricingPageClient() {
               </ul>
 
               {renderButton(
-                billingCycle === "yearly" ? "Upgrade to Premium — $79/year" : "Upgrade to Premium — $9.99/month",
+                billingCycle === "yearly" ? "Upgrade to Unlimited — $79/year" : "Upgrade to Unlimited — $9.99/month",
                 "premium",
                 premiumStatus,
                 false,

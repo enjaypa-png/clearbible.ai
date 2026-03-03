@@ -141,7 +141,7 @@ export default function ExplainPaywall({
             </span>
           </button>
 
-          {/* Premium yearly option */}
+          {/* Unlimited yearly option */}
           <button
             onClick={() => handleSubscribe("premium")}
             disabled={loading !== null}
@@ -155,7 +155,7 @@ export default function ExplainPaywall({
             <span>
               <span className="flex items-center gap-2">
                 <span className="block text-[14px] font-semibold">
-                  Premium
+                  Unlimited
                 </span>
                 <span
                   className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"

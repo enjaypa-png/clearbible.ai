@@ -171,7 +171,7 @@ export default function SummaryPaywall({
               </div>
             </button>
 
-            {/* Premium yearly */}
+            {/* Unlimited yearly */}
             <button
               onClick={() => handlePurchase("premium")}
               disabled={loading !== null}
@@ -185,7 +185,7 @@ export default function SummaryPaywall({
               <div>
                 <div className="flex items-center gap-2">
                   <div className="text-[14px] font-semibold">
-                    Premium
+                    Unlimited
                   </div>
                   <span
                     className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
