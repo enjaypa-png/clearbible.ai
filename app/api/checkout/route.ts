@@ -90,6 +90,12 @@ export async function POST(req: NextRequest) {
         metadata.product_type = "premium_annual";
         break;
 
+      case "premium_monthly":
+        productConfig = PRODUCTS.PREMIUM_MONTHLY;
+        mode = "subscription";
+        metadata.product_type = "premium_monthly";
+        break;
+
       default:
         return NextResponse.json({ error: "Invalid product" }, { status: 400 });
     }
@@ -127,7 +133,11 @@ export async function POST(req: NextRequest) {
     // {CHECKOUT_SESSION_ID} is a Stripe template variable — Stripe replaces it with the real session ID
     const origin = req.headers.get("origin") || req.headers.get("referer")?.replace(/\/[^/]*$/, "") || "";
     const successUrl = `${origin}${returnPath || "/summaries"}?checkout=success&session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${origin}${returnPath || "/summaries"}?checkout=canceled`;
+    // For cancel, don't send users to a /success page — route to /cancel sibling or back to the page
+    const cancelPath = returnPath?.endsWith("/success")
+      ? returnPath.replace("/success", "/cancel")
+      : (returnPath || "/summaries");
+    const cancelUrl = `${origin}${cancelPath}?checkout=canceled`;
 
     // Create checkout session
     const sessionParams: Record<string, unknown> = {
