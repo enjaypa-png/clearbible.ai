@@ -13,6 +13,15 @@ function AuthComplete() {
     async function finish() {
       const code = searchParams.get("code");
 
+      // Clear any stale session before exchanging — prevents
+      // "Refresh Token Not Found" when a corrupted session lingers
+      // (especially common on Safari)
+      try {
+        await supabase.auth.signOut({ scope: "local" });
+      } catch {
+        // ignore — may not have a session to clear
+      }
+
       // Try exchange if we have a code
       if (code) {
         try {
@@ -25,8 +34,8 @@ function AuthComplete() {
         }
       }
 
-      // Poll for session up to 3 seconds
-      for (let i = 0; i < 6; i++) {
+      // Poll for session up to 5 seconds (Safari can be slow to persist)
+      for (let i = 0; i < 10; i++) {
         await new Promise(r => setTimeout(r, 500));
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
