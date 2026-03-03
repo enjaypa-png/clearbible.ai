@@ -476,6 +476,18 @@ export default function ChapterReaderClient({
       });
 
       if (!response.ok) {
+        // Check if the API is telling us the user needs a subscription
+        const errorData = await response.json().catch(() => ({}));
+        if (
+          response.status === 401 ||
+          response.status === 403 ||
+          errorData.code === "AUTH_REQUIRED" ||
+          errorData.code === "SUBSCRIPTION_REQUIRED"
+        ) {
+          setHasExplainAccess(false);
+          setExplainStatus("paywall");
+          return;
+        }
         throw new Error("Failed to fetch explanation");
       }
 
