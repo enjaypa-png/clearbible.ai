@@ -13,16 +13,9 @@ function AuthComplete() {
     async function finish() {
       const code = searchParams.get("code");
 
-      // Clear any stale session before exchanging — prevents
-      // "Refresh Token Not Found" when a corrupted session lingers
-      // (especially common on Safari)
-      try {
-        await supabase.auth.signOut({ scope: "local" });
-      } catch {
-        // ignore — may not have a session to clear
-      }
-
-      // Try exchange if we have a code
+      // Exchange the OAuth code for a session (PKCE flow).
+      // NOTE: Do NOT call signOut before this — it can clear the
+      // PKCE code-verifier cookie that exchangeCodeForSession needs.
       if (code) {
         try {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
