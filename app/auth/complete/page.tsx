@@ -16,9 +16,12 @@ function AuthComplete() {
       // Try exchange if we have a code
       if (code) {
         try {
-          await supabase.auth.exchangeCodeForSession(code);
-        } catch {
-          // ignore — will fall through to session check
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) {
+            console.error("[auth/complete] exchangeCodeForSession error:", error.message);
+          }
+        } catch (err) {
+          console.error("[auth/complete] exchangeCodeForSession threw:", err);
         }
       }
 
