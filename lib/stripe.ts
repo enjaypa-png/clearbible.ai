@@ -46,14 +46,14 @@ export const PRODUCTS = {
     amount: 499,
     label: "$4.99/month",
   },
-  // Premium - $9.99/month
+  // Unlimited - $9.99/month
   PREMIUM_MONTHLY: {
     priceId: process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID || "",
     mode: "subscription" as const,
     amount: 999,
     label: "$9.99/month",
   },
-  // Premium - $79/year (all features)
+  // Unlimited - $79/year (all features)
   PREMIUM_ANNUAL: {
     priceId: process.env.STRIPE_PREMIUM_ANNUAL_PRICE_ID || "",
     mode: "subscription" as const,

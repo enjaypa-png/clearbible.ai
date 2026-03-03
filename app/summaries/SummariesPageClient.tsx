@@ -93,7 +93,7 @@ export default function SummariesPageClient({ books }: { books: Book[] }) {
             </div>
             <div>
               <p className="text-[15px] font-bold" style={{ color: "var(--foreground)" }}>All Summaries Unlocked</p>
-              <p className="text-[13px]" style={{ color: "var(--secondary)" }}>Your Premium plan includes every book summary.</p>
+              <p className="text-[13px]" style={{ color: "var(--secondary)" }}>Your Unlimited plan includes every book summary.</p>
             </div>
           </div>
         )}
@@ -105,11 +105,11 @@ export default function SummariesPageClient({ books }: { books: Book[] }) {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
-              <span className="text-[13px] font-bold text-white/80 uppercase tracking-wider">Premium Feature</span>
+              <span className="text-[13px] font-bold text-white/80 uppercase tracking-wider">Unlimited Feature</span>
             </div>
             <h2 className="text-[20px] font-bold text-white mb-1">All 66 Book Summaries</h2>
             <p className="text-[14px] text-white/80 mb-4 leading-relaxed">
-              Unlock every summary with Premium — $79/yr or $9.99/mo.
+              Unlock every summary with Unlimited — $79/yr or $9.99/mo.
             </p>
             <button
               onClick={handleUpgrade}
@@ -122,7 +122,7 @@ export default function SummariesPageClient({ books }: { books: Book[] }) {
                   <span className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin" />
                   Processing...
                 </span>
-              ) : "Upgrade to Premium"}
+              ) : "Upgrade to Unlimited"}
             </button>
           </div>
         )}
@@ -132,7 +132,7 @@ export default function SummariesPageClient({ books }: { books: Book[] }) {
           <div className="mb-6 p-5 rounded-2xl text-center"
             style={{ backgroundColor: "var(--card)", border: "0.5px solid var(--border)" }}>
             <p className="text-[15px] font-semibold mb-1" style={{ color: "var(--foreground)" }}>Sign in to access summaries</p>
-            <p className="text-[13px] mb-4" style={{ color: "var(--secondary)" }}>Book summaries are included with Premium.</p>
+            <p className="text-[13px] mb-4" style={{ color: "var(--secondary)" }}>Book summaries are included with Unlimited.</p>
             <Link href="/login" className="inline-block px-6 py-2.5 rounded-xl text-[14px] font-semibold text-white"
               style={{ backgroundColor: "var(--accent)" }}>
               Sign In

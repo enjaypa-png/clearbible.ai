@@ -89,7 +89,7 @@ export default function UpgradeNudge() {
             className="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-center transition-all active:scale-[0.98]"
             style={{ backgroundColor: "var(--accent)", color: "white" }}
           >
-            Upgrade to Premium
+            Upgrade to Unlimited
           </Link>
           <button
             onClick={dismiss}

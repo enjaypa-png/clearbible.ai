@@ -338,7 +338,7 @@ function FeatureCard({ icon, name, desc, highlight, delay }: { icon: string; nam
           letterSpacing: 0.5,
           textTransform: "uppercase",
         }}>
-          Premium
+          Unlimited
         </div>
       )}
       <div style={{ fontSize: 28, marginBottom: 14 }}>{icon}</div>
@@ -757,7 +757,7 @@ export default function ClearBibleLanding() {
               maxWidth: 520,
               margin: "0 auto",
             }}>
-              Premium adds AI-powered explanations and summaries that break down the Bible into clear, modern language. No theological jargon — just the meaning.
+              ClearBible Unlimited adds AI-powered explanations and summaries that break down the Bible into clear, modern language. No theological jargon — just the meaning.
             </p>
           </div>
 
@@ -786,7 +786,7 @@ export default function ClearBibleLanding() {
               boxShadow: "0 4px 16px rgba(124,92,252,0.3)",
               transition: "transform 0.2s ease",
             }}>
-              Upgrade to Premium
+              Upgrade to Unlimited
             </Link>
           </div>
         </div>
