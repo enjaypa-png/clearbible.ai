@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         model_id: "eleven_multilingual_v2",
         voice_settings: selectedVoice === NICHOLAS_VOICE_ID
           ? {
-              stability: 0.35,
+              stability: 0.6,
               similarity_boost: 0.9,
               speed: 1.1,
               style: 0,
