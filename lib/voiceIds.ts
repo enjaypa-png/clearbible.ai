@@ -71,6 +71,6 @@ export const VOICE_OVERRIDES: Record<string, { name?: string; description?: stri
   },
   "xJgWxOHOKbdv0ahpsrvi": {
     name: "Jose",
-    description: "Clear male, great for narration",
+    description: "Clear male voice, great for narration",
   },
 };
