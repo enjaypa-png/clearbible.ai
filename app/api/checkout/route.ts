@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
     let stripeCustomerId: string | null = null;
 
     // First check if this user already has a subscription with a Stripe customer ID
-    const { data: existingSub } = await supabase
+    const { data: existingSub, error: subError } = await supabase
       .from("subscriptions")
       .select("stripe_customer_id")
       .eq("user_id", userId)
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
 
     // Also try the stripe_customers table (may not exist in all environments)
     if (!stripeCustomerId) {
-      const { data: existingCustomer } = await supabase
+      const { data: existingCustomer, error: customerError } = await supabase
         .from("stripe_customers")
         .select("stripe_customer_id")
         .eq("user_id", userId)
