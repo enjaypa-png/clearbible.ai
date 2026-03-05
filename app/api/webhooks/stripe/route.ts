@@ -18,6 +18,26 @@ function toDbSubscriptionType(productType: string): string {
   }
 }
 
+/**
+ * Map Stripe subscription status to valid DB CHECK constraint values.
+ * DB allows: 'active', 'canceled', 'past_due', 'expired', 'trialing'
+ * Stripe can also send: 'incomplete', 'incomplete_expired', 'unpaid', 'paused'
+ */
+function toDbStatus(stripeStatus: string): string {
+  switch (stripeStatus) {
+    case "active": return "active";
+    case "past_due": return "past_due";
+    case "canceled": return "canceled";
+    case "trialing": return "trialing";
+    case "incomplete":
+    case "incomplete_expired":
+    case "unpaid":
+    case "paused":
+    default:
+      return "expired";
+  }
+}
+
 const VALID_SUBSCRIPTION_TYPES = ["summary_annual", "explain_monthly", "premium_yearly"];
 
 export async function POST(req: NextRequest) {
@@ -56,10 +76,25 @@ export async function POST(req: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session;
         const metadata = session.metadata || {};
         const productType = metadata.product_type;
-        const userId = metadata.user_id;
+        let userId = metadata.user_id;
+
+        // Fallback: look up user by email if metadata.user_id is missing
+        if (!userId && session.customer_details?.email) {
+          const { data: authData } = await supabase.auth.admin.listUsers();
+          const matchedUser = authData?.users?.find(
+            (u) => u.email === session.customer_details!.email
+          );
+          if (matchedUser) {
+            userId = matchedUser.id;
+          }
+        }
 
         if (!userId || !productType) {
-          console.error("Missing user_id or product_type in session metadata");
+          console.error("Missing user_id or product_type in session metadata", {
+            userId,
+            productType,
+            email: session.customer_details?.email,
+          });
           break;
         }
 
@@ -113,7 +148,7 @@ export async function POST(req: NextRequest) {
               stripe_customer_id: typeof subscription.customer === "string"
                 ? subscription.customer
                 : subscription.customer.id,
-              status: subscription.status === "active" ? "active" : subscription.status,
+              status: toDbStatus(subscription.status),
               current_period_start: periodStart,
               current_period_end: periodEnd,
               updated_at: new Date().toISOString(),
@@ -151,16 +186,6 @@ export async function POST(req: NextRequest) {
             break;
           }
 
-          // Update status using the DB record we found
-          let status: string;
-          switch (subscription.status) {
-            case "active": status = "active"; break;
-            case "past_due": status = "past_due"; break;
-            case "canceled": status = "canceled"; break;
-            case "trialing": status = "trialing"; break;
-            default: status = "expired";
-          }
-
           const subItem = subscription.items?.data?.[0];
           const pStartTs = subItem?.current_period_start ?? Math.floor(Date.now() / 1000);
           const pEndTs = subItem?.current_period_end ?? Math.floor(Date.now() / 1000) + 86400 * 30;
@@ -170,7 +195,7 @@ export async function POST(req: NextRequest) {
           const { error: updateError } = await supabase
             .from("subscriptions")
             .update({
-              status,
+              status: toDbStatus(subscription.status),
               current_period_start: periodStart,
               current_period_end: periodEnd,
               updated_at: new Date().toISOString(),
@@ -190,15 +215,6 @@ export async function POST(req: NextRequest) {
           break;
         }
 
-        let status: string;
-        switch (subscription.status) {
-          case "active": status = "active"; break;
-          case "past_due": status = "past_due"; break;
-          case "canceled": status = "canceled"; break;
-          case "trialing": status = "trialing"; break;
-          default: status = "expired";
-        }
-
         const subItem2 = subscription.items?.data?.[0];
         const pStartTs2 = subItem2?.current_period_start ?? Math.floor(Date.now() / 1000);
         const pEndTs2 = subItem2?.current_period_end ?? Math.floor(Date.now() / 1000) + 86400 * 30;
@@ -213,7 +229,7 @@ export async function POST(req: NextRequest) {
             stripe_customer_id: typeof subscription.customer === "string"
               ? subscription.customer
               : subscription.customer.id,
-            status,
+            status: toDbStatus(subscription.status),
             current_period_start: periodStart,
             current_period_end: periodEnd,
             updated_at: new Date().toISOString(),
