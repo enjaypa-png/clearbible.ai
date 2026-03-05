@@ -45,7 +45,32 @@ export default function SummariesPageClient({ books }: { books: Book[] }) {
         .eq("user_id", user.id)
         .eq("type", "lifetime");
 
-      setHasPremium(!!active || (purchases?.length ?? 0) > 0);
+      let hasAccess = !!active || (purchases?.length ?? 0) > 0;
+
+      // Fallback: check Stripe directly if DB says no access
+      if (!hasAccess) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) {
+            const res = await fetch("/api/check-access", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({}),
+            });
+            if (res.ok) {
+              const result = await res.json();
+              if (result.hasSummaryAccess) hasAccess = true;
+            }
+          }
+        } catch {
+          // Stripe fallback failed
+        }
+      }
+
+      setHasPremium(hasAccess);
       setLoading(false);
     }
     loadAccess();
