@@ -66,7 +66,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
   const stripe = getStripe();
 
   try {
@@ -78,24 +80,29 @@ export async function POST(req: NextRequest) {
         const productType = metadata.product_type;
         let userId = metadata.user_id;
 
-        // Fallback: look up user by email if metadata.user_id is missing
-        if (!userId && session.customer_details?.email) {
-          const { data: authData } = await supabase.auth.admin.listUsers();
-          const matchedUser = authData?.users?.find(
-            (u) => u.email === session.customer_details!.email
+        // Get Stripe customer ID directly from session
+        const stripeCustomerId = typeof session.customer === "string"
+          ? session.customer
+          : session.customer?.id ?? null;
+
+        // Primary lookup: find user by email from session.customer_details.email
+        const customerEmail = session.customer_details?.email;
+        if (!userId && customerEmail) {
+          const { data: authList } = await supabase.auth.admin.listUsers();
+          const matchedUser = authList?.users?.find(
+            (u) => u.email === customerEmail
           );
           if (matchedUser) {
             userId = matchedUser.id;
           }
         }
 
-        if (!userId || !productType) {
-          console.error("Missing user_id or product_type in session metadata", {
-            userId,
-            productType,
-            email: session.customer_details?.email,
+        if (!userId) {
+          console.error("Cannot resolve user for checkout session", {
+            email: customerEmail,
+            metadata,
           });
-          break;
+          return NextResponse.json({ error: "User not found" }, { status: 500 });
         }
 
         // One-time payment (summary_single)
@@ -124,12 +131,16 @@ export async function POST(req: NextRequest) {
         }
 
         // Subscription purchase
-        const dbType = toDbSubscriptionType(productType);
-        if (VALID_SUBSCRIPTION_TYPES.includes(dbType) && session.subscription) {
+        if (session.subscription) {
           const subscriptionId =
             typeof session.subscription === "string"
               ? session.subscription
               : session.subscription.id;
+
+          // Determine subscription type from metadata, default to premium_yearly
+          const dbType = productType
+            ? toDbSubscriptionType(productType)
+            : "premium_yearly";
 
           // Fetch the full subscription from Stripe to get accurate period data
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -145,10 +156,11 @@ export async function POST(req: NextRequest) {
               user_id: userId,
               type: dbType,
               stripe_subscription_id: subscriptionId,
-              stripe_customer_id: typeof subscription.customer === "string"
-                ? subscription.customer
-                : subscription.customer.id,
-              status: toDbStatus(subscription.status),
+              stripe_customer_id: stripeCustomerId
+                ?? (typeof subscription.customer === "string"
+                  ? subscription.customer
+                  : subscription.customer.id),
+              status: "active",
               current_period_start: periodStart,
               current_period_end: periodEnd,
               updated_at: new Date().toISOString(),
