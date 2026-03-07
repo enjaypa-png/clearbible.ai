@@ -824,10 +824,10 @@ export default function ChapterReaderClient({
             className="flex items-center gap-1.5 active:opacity-70 transition-opacity min-w-[60px]"
             style={{ color: "var(--accent)" }}
           >
-            <svg width="7" height="12" viewBox="0 0 7 12" fill="none">
-              <path d="M6 1L1 6L6 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="9" height="15" viewBox="0 0 7 12" fill="none">
+              <path d="M6 1L1 6L6 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span className="text-[13px] font-medium">Books</span>
+            <span className="text-[16px] font-medium">Books</span>
           </Link>
 
           {/* Center: Book name + chapter picker toggle */}
@@ -859,16 +859,16 @@ export default function ChapterReaderClient({
               style={{ backgroundColor: thisTrackPlaying || thisTrackPaused ? "var(--accent)" : theme.card }}
             >
               {thisTrackLoading ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" className="animate-spin">
+                <svg width="20" height="20" viewBox="0 0 24 24" className="animate-spin">
                   <circle cx="12" cy="12" r="10" stroke={theme.secondary} strokeWidth="2" fill="none" strokeDasharray="60" strokeDashoffset="20" strokeLinecap="round" />
                 </svg>
               ) : thisTrackPlaying ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
                   <rect x="6" y="4" width="4" height="16" rx="1" />
                   <rect x="14" y="4" width="4" height="16" rx="1" />
                 </svg>
               ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={thisTrackPaused ? "white" : theme.secondary} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={thisTrackPaused ? "white" : "var(--foreground)"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
                 </svg>
               )}
@@ -882,7 +882,7 @@ export default function ChapterReaderClient({
               aria-label={bookmarkedVerse !== null ? "Remove bookmark" : "Bookmark"}
               style={{ backgroundColor: theme.card }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill={bookmarkedVerse !== null ? "var(--accent)" : "none"} stroke={bookmarkedVerse !== null ? "var(--accent)" : theme.secondary} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill={bookmarkedVerse !== null ? "var(--accent)" : "none"} stroke={bookmarkedVerse !== null ? "var(--accent)" : "var(--foreground)"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
               </svg>
             </button>
@@ -895,7 +895,7 @@ export default function ChapterReaderClient({
               aria-label="Reading settings"
               style={{ backgroundColor: theme.card }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.secondary} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--foreground)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
                 <circle cx="12" cy="12" r="3" />
               </svg>

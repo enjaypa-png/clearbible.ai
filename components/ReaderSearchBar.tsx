@@ -10,34 +10,41 @@ export default function ReaderSearchBar() {
       <button
         type="button"
         onClick={() => router.push("/search")}
-        className="flex items-center gap-2 w-full rounded-full px-4 py-2.5 transition-colors"
+        className="flex items-center w-full rounded-2xl px-4 py-3 transition-all active:scale-[0.99]"
         style={{
           backgroundColor: "var(--card)",
-          border: "1px solid var(--border)",
+          border: "1.5px solid var(--accent)",
+          boxShadow: "0 2px 12px rgba(124, 92, 252, 0.12)",
         }}
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="var(--accent)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="flex-shrink-0"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
+        {/* Sparkle icon */}
         <span
-          className="text-[14px]"
+          className="flex-shrink-0 text-[14px] mr-2.5"
+          style={{ color: "var(--accent)" }}
+        >
+          &#10022;
+        </span>
+
+        {/* Placeholder text */}
+        <span
+          className="flex-1 text-left text-[14px]"
           style={{
             color: "var(--secondary)",
             fontFamily: "'DM Sans', sans-serif",
           }}
         >
-          Search
+          Ask ClearBible AI...
+        </span>
+
+        {/* Ask AI button */}
+        <span
+          className="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-[12px] font-bold"
+          style={{
+            backgroundColor: "var(--accent)",
+            color: "#fff",
+          }}
+        >
+          Ask AI
         </span>
       </button>
     </div>
