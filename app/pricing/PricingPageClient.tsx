@@ -66,7 +66,7 @@ export default function PricingPageClient() {
   const isPremium = premiumStatus === "active" || premiumStatus === "canceled";
 
   async function handleCheckout(
-    product: "premium_annual",
+    product: "premium_annual" | "premium_monthly",
     key: string
   ) {
     if (!isAuthenticated) {
@@ -218,7 +218,7 @@ export default function PricingPageClient() {
               </p>
 
               <div
-                className="flex items-center justify-between p-3 rounded-lg mb-4"
+                className="flex items-center justify-between p-3 rounded-lg mb-2"
                 style={{ backgroundColor: "var(--background)" }}
               >
                 <div>
@@ -235,6 +235,28 @@ export default function PricingPageClient() {
                   </span>
                   <span className="text-[13px]" style={{ color: "var(--foreground-secondary)" }}>
                     /year
+                  </span>
+                </div>
+              </div>
+
+              <div
+                className="flex items-center justify-between p-3 rounded-lg mb-4"
+                style={{ backgroundColor: "var(--background)" }}
+              >
+                <div>
+                  <span className="text-[15px] font-semibold" style={{ color: "var(--foreground)" }}>
+                    Monthly
+                  </span>
+                  <p className="text-[12px]" style={{ color: "var(--foreground-secondary)" }}>
+                    All features, cancel anytime
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="text-[24px] font-bold" style={{ color: "var(--accent)" }}>
+                    $9.99
+                  </span>
+                  <span className="text-[13px]" style={{ color: "var(--foreground-secondary)" }}>
+                    /month
                   </span>
                 </div>
               </div>
