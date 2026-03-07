@@ -53,8 +53,8 @@ export default function TermsPage() {
             <h2 className="text-[17px] font-semibold mb-2">2. Description of Service</h2>
             <p>
               ClearBible.ai is a digital Bible reading application. The Service provides free
-              access to the King James Version Bible text and audio playback. We also offer optional
-              paid features including AI-generated book summaries and AI-generated verse
+              access to the King James Version Bible text. We also offer optional
+              paid features including audio playback, AI-generated book summaries, and AI-generated verse
               explanations. These paid features are educational reading tools designed to help users
               retain and understand what they read.
             </p>

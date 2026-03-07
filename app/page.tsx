@@ -34,12 +34,14 @@ const FEATURES_PREMIUM = [
 const DEMO_VERSE_TEXT =
   "For the love of money is the root of all evil: which while some coveted after, they have erred from the faith, and pierced themselves through with many sorrows.";
 
+const DEMO_EXPLANATION =
+  "Most people quote this as \u2018money is the root of all evil\u2019 \u2014 but that\u2019s not what it says. It\u2019s the love of money that Paul is warning about, not money itself. He\u2019s describing what happens when the desire to get rich becomes your main focus: you start making compromises and drifting from what actually matters. The \u2018sorrows\u2019 he mentions aren\u2019t divine punishment \u2014 they\u2019re just the natural consequences of that kind of life.";
+
 function VerseDemo() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [explanationText, setExplanationText] = useState<string | null>(null);
-  const [explanationLoading, setExplanationLoading] = useState(false);
   const [audioEl] = useState(() => typeof window !== "undefined" ? new Audio() : null);
 
   // Stop speech when explanation is closed
@@ -117,34 +119,11 @@ function VerseDemo() {
           {/* Verse 10 - interactive */}
           <div style={{ position: "relative" }}>
             <p
-              onClick={async () => {
+              onClick={() => {
                 const next = !showExplanation;
                 setShowExplanation(next);
-                if (next && !explanationText && !explanationLoading) {
-                  setExplanationLoading(true);
-                  setExplanationText(null);
-                  try {
-                    const res = await fetch("/api/explain-verse", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        verse_id: "1 Timothy.6.10",
-                        verseText: DEMO_VERSE_TEXT,
-                      }),
-                    });
-                    if (res.ok) {
-                      const data = await res.json();
-                      setExplanationText(
-                        data.explanation || data.text || "Explanation unavailable. Please try again."
-                      );
-                    } else {
-                      setExplanationText("Explanation unavailable. Please try again.");
-                    }
-                  } catch {
-                    setExplanationText("Explanation unavailable. Please try again.");
-                  } finally {
-                    setExplanationLoading(false);
-                  }
+                if (next && !explanationText) {
+                  setExplanationText(DEMO_EXPLANATION);
                 }
               }}
               style={{
@@ -243,9 +222,7 @@ function VerseDemo() {
                   margin: 0,
                   fontFamily: "'DM Sans', sans-serif",
                 }}>
-                  {explanationLoading
-                    ? "Loading explanation..."
-                    : explanationText || "Explanation unavailable. Please try again."}
+                  {explanationText}
                 </p>
               </div>
             )}

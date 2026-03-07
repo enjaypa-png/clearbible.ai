@@ -17,14 +17,6 @@ const DEMO_VERSES = [
     text: "The woman gave birth to a son and named him Samson. The boy grew up, and the LORD blessed him.",
   },
   {
-    reference: "Judges 14:6",
-    text: "The Spirit of the LORD came powerfully upon him so that he tore the lion apart with his bare hands as he might have torn a young goat.",
-  },
-  {
-    reference: "Judges 16:17",
-    text: "So he told her everything. \u201CNo razor has ever been used on my head,\u201D he said, \u201Cbecause I have been a Nazirite dedicated to God from my mother\u2019s womb. If my head were shaved, my strength would leave me.\u201D",
-  },
-  {
     reference: "Judges 16:30",
     text: "Samson said, \u201CLet me die with the Philistines!\u201D Then he pushed with all his might, and down came the temple on the rulers and all the people in it.",
   },
