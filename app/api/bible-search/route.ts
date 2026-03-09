@@ -25,6 +25,25 @@ Many users will ask about modern topics like anxiety, depression, addiction, rel
 
 The goal is for every user — no matter what they're struggling with — to feel like the Bible has something meaningful to say to them.`;
 
+const TOPIC_CHECK_PROMPT = `You are a classifier. Determine if the user's question is related to the Bible, Christianity, faith, spirituality, morality, or human life experiences that the Bible addresses (e.g., anxiety, grief, relationships, purpose, forgiveness, identity, suffering).
+
+Answer ONLY "yes" or "no".
+
+- "yes" = The question is about the Bible, Christianity, theology, biblical people/events, OR a human life topic that biblical wisdom can meaningfully speak to (emotions, struggles, relationships, life purpose, ethics, death, meaning).
+- "no" = The question is about something completely unrelated to the Bible or human spiritual/moral experience — like video games, sports scores, celebrities, tech products, recipes, math problems, trivia about secular topics, etc.
+
+Examples:
+- "Who was Moses?" → yes
+- "What does the Bible say about anxiety?" → yes
+- "How do I deal with grief?" → yes
+- "When did Super Mario Bros come out?" → no
+- "What is the capital of France?" → no
+- "How do I make pasta?" → no
+- "What is the meaning of life?" → yes
+- "Who won the Super Bowl?" → no`;
+
+const OFF_TOPIC_ANSWER = "That's a great question, but it's not something the Bible addresses! I'm here to help with Bible questions — like questions about biblical people, events, teachings, or how Scripture speaks to life's big questions. Feel free to ask me anything about the Bible!";
+
 interface MatchVerseRow {
   book_id: string;
   chapter: number;
@@ -118,6 +137,22 @@ export async function POST(req: NextRequest) {
   try {
     const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
     const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // 0) Quick topic check — reject off-topic questions before expensive search
+    const topicCheckRes = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: TOPIC_CHECK_PROMPT },
+        { role: "user", content: query },
+      ],
+      max_tokens: 3,
+      temperature: 0,
+    });
+
+    const topicAnswer = (topicCheckRes.choices?.[0]?.message?.content || "").trim().toLowerCase();
+    if (topicAnswer === "no") {
+      return NextResponse.json({ answer: OFF_TOPIC_ANSWER, verses: [] });
+    }
 
     // 1) Embed the natural language query
     const embeddingRes = await openai.embeddings.create({
