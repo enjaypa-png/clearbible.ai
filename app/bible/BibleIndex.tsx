@@ -84,13 +84,15 @@ function BibleAISearch({
       onGoToReference();
       return;
     }
+    // If it's clearly just a short book-name filter (1-2 words, matches a book), let the list handle it
     const lower = q.toLowerCase();
+    const words = q.split(/\s+/);
     const matchesBook = books.some((b) => b.name.toLowerCase().startsWith(lower));
-    if (matchesBook) {
-      // Let the book list filter handle this case
+    if (matchesBook && words.length <= 2) {
       return;
     }
-    if (looksLikeQuestion(q)) {
+    // For anything else (questions, longer queries), run AI search
+    if (q.length >= 3) {
       runAiSearch(q);
     }
   }
@@ -124,22 +126,34 @@ function BibleAISearch({
               }
             }}
             placeholder="Ask ClearBible AI..."
-            className="flex-1 bg-transparent text-[14px] outline-none"
+            className="flex-1 min-w-0 bg-transparent text-[14px] outline-none"
             style={{
               color: "var(--foreground)",
               fontFamily: "'DM Sans', sans-serif",
             }}
           />
           {searchQuery ? (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="p-1 rounded-full active:opacity-70"
-              style={{ color: "var(--secondary)" }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <button
+                onClick={() => handleEnter()}
+                className="px-3 py-1.5 rounded-xl text-[12px] font-bold active:opacity-70"
+                style={{
+                  backgroundColor: "var(--accent)",
+                  color: "#fff",
+                }}
+              >
+                Search
+              </button>
+              <button
+                onClick={() => setSearchQuery("")}
+                className="p-1 rounded-full active:opacity-70"
+                style={{ color: "var(--secondary)" }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           ) : (
             <span
               className="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-[12px] font-bold"
