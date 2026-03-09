@@ -38,7 +38,7 @@ function BibleAISearch({
   parsedReference,
   onGoToReference,
   books,
-  onSelectVerse,
+  onOpenAiSearch,
   inputRef,
 }: {
   searchQuery: string;
@@ -46,12 +46,9 @@ function BibleAISearch({
   parsedReference: ParsedReference | null;
   onGoToReference: () => void;
   books: Book[];
-  onSelectVerse: (slug: string, chapter: number, verse: number) => void;
+  onOpenAiSearch: (query: string) => void;
   inputRef?: React.RefObject<HTMLInputElement>;
 }) {
-  const [showAiModal, setShowAiModal] = useState(false);
-  const [aiSearchQuery, setAiSearchQuery] = useState("");
-
   function handleEnter() {
     const q = searchQuery.trim();
     if (!q) return;
@@ -68,92 +65,80 @@ function BibleAISearch({
     }
     // For anything else (questions, longer queries), open AI search modal
     if (q.length >= 3) {
-      setAiSearchQuery(q);
-      setShowAiModal(true);
+      onOpenAiSearch(q);
     }
   }
 
   return (
-    <>
-      <div className="mt-4">
-        <div
-          className="flex items-center w-full rounded-2xl px-4 py-3 transition-all"
-          style={{
-            backgroundColor: "var(--card)",
-            border: "1.5px solid var(--accent)",
-            boxShadow: "0 2px 12px rgba(124, 92, 252, 0.12)",
-          }}
+    <div className="mt-4">
+      <div
+        className="flex items-center w-full rounded-2xl px-4 py-3 transition-all"
+        style={{
+          backgroundColor: "var(--card)",
+          border: "1.5px solid var(--accent)",
+          boxShadow: "0 2px 12px rgba(124, 92, 252, 0.12)",
+        }}
+      >
+        {/* Sparkle icon */}
+        <span
+          className="flex-shrink-0 text-[14px] mr-2.5"
+          style={{ color: "var(--accent)" }}
         >
-          {/* Sparkle icon */}
-          <span
-            className="flex-shrink-0 text-[14px] mr-2.5"
-            style={{ color: "var(--accent)" }}
-          >
-            &#10022;
-          </span>
-          <input
-            ref={inputRef}
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleEnter();
-              }
-            }}
-            placeholder="Ask ClearBible AI..."
-            className="flex-1 min-w-0 bg-transparent text-[14px] outline-none"
-            style={{
-              color: "var(--foreground)",
-              fontFamily: "'DM Sans', sans-serif",
-            }}
-          />
-          {searchQuery ? (
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <button
-                onClick={() => handleEnter()}
-                className="px-3 py-1.5 rounded-xl text-[12px] font-bold active:opacity-70"
-                style={{
-                  backgroundColor: "var(--accent)",
-                  color: "#fff",
-                }}
-              >
-                Search
-              </button>
-              <button
-                onClick={() => setSearchQuery("")}
-                className="p-1 rounded-full active:opacity-70"
-                style={{ color: "var(--secondary)" }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          ) : (
-            <span
-              className="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-[12px] font-bold"
+          &#10022;
+        </span>
+        <input
+          ref={inputRef}
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleEnter();
+            }
+          }}
+          placeholder="Ask ClearBible AI..."
+          className="flex-1 min-w-0 bg-transparent text-[14px] outline-none"
+          style={{
+            color: "var(--foreground)",
+            fontFamily: "'DM Sans', sans-serif",
+          }}
+        />
+        {searchQuery ? (
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <button
+              onClick={() => handleEnter()}
+              className="px-3 py-1.5 rounded-xl text-[12px] font-bold active:opacity-70"
               style={{
                 backgroundColor: "var(--accent)",
                 color: "#fff",
               }}
             >
-              Ask AI
-            </span>
-          )}
-        </div>
+              Search
+            </button>
+            <button
+              onClick={() => setSearchQuery("")}
+              className="p-1 rounded-full active:opacity-70"
+              style={{ color: "var(--secondary)" }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        ) : (
+          <span
+            className="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-[12px] font-bold"
+            style={{
+              backgroundColor: "var(--accent)",
+              color: "#fff",
+            }}
+          >
+            Ask AI
+          </span>
+        )}
       </div>
-
-      <AISearchModal
-        isOpen={showAiModal}
-        onClose={() => setShowAiModal(false)}
-        initialQuery={aiSearchQuery}
-        onSelectVerse={(slug, chapter, verse) => {
-          onSelectVerse(slug, chapter, verse);
-        }}
-      />
-    </>
+    </div>
   );
 }
 
@@ -173,6 +158,10 @@ export default function BibleIndex({ books }: { books: Book[] }) {
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // AI search modal state (lifted here so modal renders outside the header's stacking context)
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [aiSearchQuery, setAiSearchQuery] = useState("");
 
   // Auto-focus search input when navigating via "Ask AI" tab
   useEffect(() => {
@@ -475,9 +464,9 @@ export default function BibleIndex({ books }: { books: Book[] }) {
                 onGoToReference={handleGoToReference}
                 books={books}
                 inputRef={searchInputRef}
-                onSelectVerse={(slug, chapter, verse) => {
-                  setSearchQuery("");
-                  router.push(`/bible/${slug}/${chapter}?verse=${verse}`);
+                onOpenAiSearch={(q) => {
+                  setAiSearchQuery(q);
+                  setShowAiModal(true);
                 }}
               />
 
@@ -675,6 +664,18 @@ export default function BibleIndex({ books }: { books: Book[] }) {
           </>
         )}
       </main>
+
+      {/* AI Search Modal — rendered outside header to avoid backdrop-filter stacking context */}
+      <AISearchModal
+        isOpen={showAiModal}
+        onClose={() => setShowAiModal(false)}
+        initialQuery={aiSearchQuery}
+        onSelectVerse={(slug, chapter, verse) => {
+          setShowAiModal(false);
+          setSearchQuery("");
+          router.push(`/bible/${slug}/${chapter}?verse=${verse}`);
+        }}
+      />
     </div>
   );
 }
