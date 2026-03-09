@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useReadingSettings, TRANSLATION_LABELS } from "@/contexts/ReadingSettingsContext";
 
@@ -38,6 +38,7 @@ function BibleAISearch({
   onGoToReference,
   books,
   onSelectVerse,
+  inputRef,
 }: {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
@@ -45,6 +46,7 @@ function BibleAISearch({
   onGoToReference: () => void;
   books: Book[];
   onSelectVerse: (slug: string, chapter: number, verse: number) => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
 }) {
   const [aiResults, setAiResults] = useState<any[]>([]);
   const [aiLoading, setAiLoading] = useState(false);
@@ -84,13 +86,15 @@ function BibleAISearch({
       onGoToReference();
       return;
     }
+    // If it's clearly just a short book-name filter (1-2 words, matches a book), let the list handle it
     const lower = q.toLowerCase();
+    const words = q.split(/\s+/);
     const matchesBook = books.some((b) => b.name.toLowerCase().startsWith(lower));
-    if (matchesBook) {
-      // Let the book list filter handle this case
+    if (matchesBook && words.length <= 2) {
       return;
     }
-    if (looksLikeQuestion(q)) {
+    // For anything else (questions, longer queries), run AI search
+    if (q.length >= 3) {
       runAiSearch(q);
     }
   }
@@ -114,6 +118,7 @@ function BibleAISearch({
             &#10022;
           </span>
           <input
+            ref={inputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -124,22 +129,34 @@ function BibleAISearch({
               }
             }}
             placeholder="Ask ClearBible AI..."
-            className="flex-1 bg-transparent text-[14px] outline-none"
+            className="flex-1 min-w-0 bg-transparent text-[14px] outline-none"
             style={{
               color: "var(--foreground)",
               fontFamily: "'DM Sans', sans-serif",
             }}
           />
           {searchQuery ? (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="p-1 rounded-full active:opacity-70"
-              style={{ color: "var(--secondary)" }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <button
+                onClick={() => handleEnter()}
+                className="px-3 py-1.5 rounded-xl text-[12px] font-bold active:opacity-70"
+                style={{
+                  backgroundColor: "var(--accent)",
+                  color: "#fff",
+                }}
+              >
+                Search
+              </button>
+              <button
+                onClick={() => setSearchQuery("")}
+                className="p-1 rounded-full active:opacity-70"
+                style={{ color: "var(--secondary)" }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           ) : (
             <span
               className="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-[12px] font-bold"
@@ -251,6 +268,7 @@ function BibleAISearch({
 
 export default function BibleIndex({ books }: { books: Book[] }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { settings } = useReadingSettings();
   const translationInfo = TRANSLATION_LABELS[settings.translation || "ct"];
 
@@ -263,6 +281,14 @@ export default function BibleIndex({ books }: { books: Book[] }) {
 
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-focus search input when navigating via "Ask AI" tab
+  useEffect(() => {
+    if (searchParams.get("askai") === "1" && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [searchParams]);
 
   // Automatic reading position from localStorage
   const [readingPosition, setReadingPosition] = useState<{
@@ -557,6 +583,7 @@ export default function BibleIndex({ books }: { books: Book[] }) {
                 parsedReference={parsedReference}
                 onGoToReference={handleGoToReference}
                 books={books}
+                inputRef={searchInputRef}
                 onSelectVerse={(slug, chapter, verse) => {
                   setSearchQuery("");
                   router.push(`/bible/${slug}/${chapter}?verse=${verse}`);
