@@ -233,10 +233,9 @@ export async function POST(req: NextRequest) {
       };
     });
 
-    // 5) Generate an AI answer using the top verses as context
+    // 5) Generate an AI answer AND filter relevant verses
     const verseContext = verses
-      .slice(0, 6)
-      .map((v) => `${v.reference}: "${v.text}"`)
+      .map((v, i) => `[${i}] ${v.reference}: "${v.text}"`)
       .join("\n\n");
 
     const answerRes = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -248,26 +247,44 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: ANSWER_SYSTEM_PROMPT },
+          { role: "system", content: ANSWER_SYSTEM_PROMPT + `\n\nIMPORTANT: You must respond in valid JSON format with two fields:
+1. "answer": your answer text (2-4 sentences)
+2. "relevant_indices": an array of numbers representing which verse indices (from the numbered list below) are actually relevant to the question. Only include verses that directly relate to the topic. Exclude any verse that was matched by coincidence (e.g., a verse containing the word "job" in its modern English sense when the question is about the biblical person Job).` },
           {
             role: "user",
-            content: `Question: "${query}"\n\nHere are some Bible verses that may be relevant:\n${verseContext}\n\nAnswer the question directly using your Bible knowledge. Reference specific books, chapters, and verses.`,
+            content: `Question: "${query}"\n\nHere are candidate Bible verses (some may not be relevant):\n${verseContext}\n\nRespond with JSON: {"answer": "...", "relevant_indices": [...]}`,
           },
         ],
-        max_tokens: 350,
+        max_tokens: 500,
         temperature: 0.4,
       }),
     });
 
     let answer: string | null = null;
+    let filteredVerses = verses;
     if (answerRes.ok) {
       const answerData = await answerRes.json();
-      answer = answerData.choices?.[0]?.message?.content?.trim() || null;
+      const raw = answerData.choices?.[0]?.message?.content?.trim() || "";
+      try {
+        // Try to parse as JSON
+        const cleanJson = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+        const parsed = JSON.parse(cleanJson);
+        answer = parsed.answer || null;
+        if (Array.isArray(parsed.relevant_indices) && parsed.relevant_indices.length > 0) {
+          const indices = new Set(parsed.relevant_indices.map(Number));
+          filteredVerses = verses.filter((_, i) => indices.has(i));
+          // Fallback: if filtering removed everything, keep original
+          if (filteredVerses.length === 0) filteredVerses = verses;
+        }
+      } catch {
+        // If JSON parsing fails, use the raw text as the answer
+        answer = raw;
+      }
     } else {
       console.error("[bible-search] GPT answer error:", answerRes.status);
     }
 
-    return NextResponse.json({ answer, verses });
+    return NextResponse.json({ answer, verses: filteredVerses });
   } catch (err) {
     console.error("[bible-search] Unexpected error:", err);
     return NextResponse.json(

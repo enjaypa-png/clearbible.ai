@@ -33,6 +33,7 @@ export default function AISearchModal({
   const [verses, setVerses] = useState<SearchVerse[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastAutoSearchRef = useRef("");
 
   // Focus input when modal opens
   useEffect(() => {
@@ -46,15 +47,17 @@ export default function AISearchModal({
       setVerses([]);
       setHasSearched(false);
       setLoading(false);
+      lastAutoSearchRef.current = "";
     }
   }, [isOpen]);
-
-  // Update query if initialQuery changes while open
   useEffect(() => {
-    if (initialQuery) {
+    if (isOpen && initialQuery && initialQuery !== lastAutoSearchRef.current) {
       setQuery(initialQuery);
+      lastAutoSearchRef.current = initialQuery;
+      // Small delay to let state settle
+      setTimeout(() => handleSearch(initialQuery), 50);
     }
-  }, [initialQuery]);
+  }, [isOpen, initialQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSearch(searchQuery?: string) {
     const trimmed = (searchQuery || query).trim();
@@ -353,45 +356,6 @@ export default function AISearchModal({
             </>
           )}
 
-          {/* Empty state before search */}
-          {!loading && !hasSearched && !error && (
-            <div className="py-4">
-              <p
-                className="text-[11px] font-bold uppercase tracking-wider mb-2"
-                style={{
-                  color: "var(--secondary)",
-                  letterSpacing: "0.08em",
-                }}
-              >
-                Try asking
-              </p>
-              <div className="flex flex-col gap-1.5">
-                {[
-                  "Who was King David?",
-                  "What does the Bible say about anxiety?",
-                  "Why did God flood the earth?",
-                  "Who was Samson?",
-                ].map((q) => (
-                  <button
-                    key={q}
-                    type="button"
-                    onClick={() => {
-                      setQuery(q);
-                      handleSearch(q);
-                    }}
-                    className="text-left px-3 py-2.5 rounded-xl text-[13px] active:opacity-70 transition-opacity"
-                    style={{
-                      backgroundColor: "var(--background)",
-                      border: "0.5px solid var(--border)",
-                      color: "var(--foreground)",
-                    }}
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
