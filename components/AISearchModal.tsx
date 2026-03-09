@@ -128,7 +128,7 @@ export default function AISearchModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4"
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+      style={{ backgroundColor: "rgba(0,0,0,0.35)", backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)" }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
