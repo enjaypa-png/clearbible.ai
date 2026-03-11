@@ -93,7 +93,11 @@ export default function BottomTabBar() {
     pathname.startsWith("/terms") ||
     pathname.startsWith("/privacy") ||
     pathname.startsWith("/refunds") ||
-    pathname.startsWith("/pricing")
+    pathname.startsWith("/pricing") ||
+    pathname.startsWith("/how-it-works") ||
+    pathname.startsWith("/features") ||
+    pathname.startsWith("/tools") ||
+    pathname.startsWith("/blog")
   ) {
     return null;
   }
