@@ -26,6 +26,7 @@ export default function Navigation() {
       style={{ backgroundColor: "var(--background-blur)", borderColor: "var(--border)" }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+        
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
@@ -65,6 +66,7 @@ export default function Navigation() {
           >
             Login
           </Link>
+
           <Link
             href="/signup"
             className="inline-flex items-center justify-center rounded-full text-sm font-semibold px-4 py-1.5"
@@ -73,6 +75,7 @@ export default function Navigation() {
             Start Reading Free
           </Link>
         </div>
+
       </div>
     </nav>
   );
