@@ -127,17 +127,18 @@ export default function AISearchModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-5"
       style={{ backgroundColor: "rgba(0,0,0,0.35)", backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)" }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="w-full max-w-lg rounded-2xl overflow-hidden"
+        className="w-full rounded-2xl overflow-hidden"
         style={{
           backgroundColor: "var(--card)",
           border: "0.5px solid var(--border)",
+          maxWidth: "min(32rem, 100%)",
           maxHeight: "80vh",
           display: "flex",
           flexDirection: "column",
@@ -254,7 +255,20 @@ export default function AISearchModal({
                 color: "#c0392b",
               }}
             >
-              {error}
+              <p className="m-0">{error}</p>
+              {!error.includes("premium") && (
+                <button
+                  type="button"
+                  onClick={() => handleSearch()}
+                  className="mt-2 px-3 py-1.5 rounded-lg text-[12px] font-semibold"
+                  style={{
+                    backgroundColor: "var(--accent)",
+                    color: "#fff",
+                  }}
+                >
+                  Try Again
+                </button>
+              )}
             </div>
           )}
 
