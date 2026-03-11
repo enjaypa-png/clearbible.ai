@@ -15,8 +15,6 @@ import InstallPrompt from "@/components/InstallPrompt";
 import { HIGHLIGHT_COLORS, getHighlightBg } from "@/lib/highlightColors";
 import ReaderSearchBar from "@/components/ReaderSearchBar";
 
-// Feature flag: show a bold lead-in line above explanation text
-const SHOW_EXPLAIN_LEADIN = true;
 
 interface Verse {
   id: string;
@@ -1216,13 +1214,8 @@ export default function ChapterReaderClient({
                         Close
                       </button>
                     </span>
-                    {SHOW_EXPLAIN_LEADIN && (
-                      <span className="block text-[13px] font-semibold mb-2" style={{ color: theme.text }}>
-                        In simple terms:
-                      </span>
-                    )}
                     <span className="block text-[14px] leading-relaxed" style={{ color: theme.text }}>
-                      {explanation}
+                      {explanation.replace(/^In simple terms:\s*/i, '')}
                     </span>
                   </span>
                 )}
