@@ -59,6 +59,35 @@ export default function AISearchModal({
     }
   }, [isOpen, initialQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  async function doFetch(trimmed: string, token: string | null) {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    return fetch("/api/bible-search", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ query: trimmed }),
+    });
+  }
+
+  async function getAccessToken(): Promise<string | null> {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    return session?.access_token ?? null;
+  }
+
+  async function getFreshAccessToken(): Promise<string | null> {
+    const {
+      data: { session },
+    } = await supabase.auth.refreshSession();
+    return session?.access_token ?? null;
+  }
+
   async function handleSearch(searchQuery?: string) {
     const trimmed = (searchQuery || query).trim();
     if (!trimmed) return;
@@ -71,23 +100,17 @@ export default function AISearchModal({
     setHasSearched(true);
 
     try {
-      // Get auth token
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      let token = await getAccessToken();
+      let res = await doFetch(trimmed, token);
 
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-      if (session?.access_token) {
-        headers["Authorization"] = `Bearer ${session.access_token}`;
+      // If auth failed, refresh the token and retry once
+      if (res.status === 401 || res.status === 403) {
+        const retryData = await res.json().catch(() => ({}));
+        if (retryData.code !== "PAYWALL") {
+          token = await getFreshAccessToken();
+          res = await doFetch(trimmed, token);
+        }
       }
-
-      const res = await fetch("/api/bible-search", {
-        method: "POST",
-        headers,
-        body: JSON.stringify({ query: trimmed }),
-      });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -105,7 +128,7 @@ export default function AISearchModal({
       setAnswer(data.answer || null);
       setVerses(Array.isArray(data.verses) ? data.verses : []);
     } catch {
-      setError("Search unavailable. Please try again.");
+      setError("Search unavailable. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -255,20 +278,7 @@ export default function AISearchModal({
                 color: "#c0392b",
               }}
             >
-              <p className="m-0">{error}</p>
-              {!error.includes("premium") && (
-                <button
-                  type="button"
-                  onClick={() => handleSearch()}
-                  className="mt-2 px-3 py-1.5 rounded-lg text-[12px] font-semibold"
-                  style={{
-                    backgroundColor: "var(--accent)",
-                    color: "#fff",
-                  }}
-                >
-                  Try Again
-                </button>
-              )}
+              {error}
             </div>
           )}
 
