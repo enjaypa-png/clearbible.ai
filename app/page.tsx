@@ -487,9 +487,9 @@ export default function ClearBibleLanding() {
           <div style={{ marginBottom: 28, animation: "fadeUp 0.5s ease both" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/brand/logo.svg"
+              src="/brand/logo.png"
               alt="ClearBible.ai"
-              style={{ margin: "0 auto", display: "block", maxWidth: 360, width: "100%", height: "auto" }}
+              style={{ margin: "0 auto", display: "block", maxWidth: 280, width: "100%", height: "auto" }}
             />
           </div>
 
@@ -941,7 +941,7 @@ export default function ClearBibleLanding() {
         <div style={{ marginBottom: 16 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/brand/logo.svg"
+            src="/brand/logo.png"
             alt="ClearBible.ai"
             style={{ margin: "0 auto 12px", display: "block", width: 40, height: 40, objectFit: "contain" }}
           />

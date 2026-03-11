@@ -24,7 +24,7 @@ export default function Navigation() {
           <Link href="/" className="flex items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/brand/logo.svg"
+              src="/brand/logo.png"
               alt="ClearBible.ai"
               className="h-8 sm:h-9 w-auto flex-shrink-0"
               style={{ objectFit: "contain" }}
