@@ -267,25 +267,15 @@ a:focus-visible {
   );
 }
 
-/* Marketing nav — floating pill like Outrank */
+/* Marketing nav */
 .marketing-nav {
   position: sticky;
-  top: 12px;
+  top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(232, 229, 224, 0.5);
-  margin: 12px 24px 0;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-}
-
-@media (max-width: 768px) {
-  .marketing-nav {
-    margin: 8px 12px 0;
-    border-radius: 14px;
-  }
+  border-bottom: 1px solid rgba(232, 229, 224, 0.5);
 }
 
 /* Marketing button styles */
