@@ -467,6 +467,7 @@ export default function BibleIndex({ books }: { books: Book[] }) {
                 onOpenAiSearch={(q) => {
                   setAiSearchQuery(q);
                   setShowAiModal(true);
+                  setSearchQuery("");
                 }}
               />
 
