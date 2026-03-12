@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import BrandName from "@/components/BrandName";
 
 export const metadata = {
   title: "Privacy Policy - ClearBible.ai",
@@ -42,7 +43,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[17px] font-semibold mb-2">1. Information We Collect</h2>
-            <p>When you use ClearBible.ai, we may collect:</p>
+            <p>When you use <BrandName />, we may collect:</p>
             <ul className="list-disc ml-5 mt-2 space-y-1">
               <li>
                 <strong>Account information:</strong> Email address and authentication credentials
@@ -76,7 +77,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-[17px] font-semibold mb-2">3. Third-Party Services</h2>
-            <p>We use the following third-party services to operate ClearBible.ai:</p>
+            <p>We use the following third-party services to operate <BrandName />:</p>
             <ul className="list-disc ml-5 mt-2 space-y-1">
               <li>
                 <strong>Supabase:</strong> Authentication and database hosting
@@ -132,7 +133,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[17px] font-semibold mb-2">7. Cookies and Local Storage</h2>
             <p>
-              ClearBible.ai uses browser local storage to save your reading position and
+              <BrandName /> uses browser local storage to save your reading position and
               preferences. We use authentication tokens to keep you signed in. We do not use
               third-party advertising cookies.
             </p>
@@ -141,7 +142,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[17px] font-semibold mb-2">8. Children&apos;s Privacy</h2>
             <p>
-              ClearBible.ai is not directed at children under 13. We do not knowingly collect
+              <BrandName /> is not directed at children under 13. We do not knowingly collect
               personal information from children under 13. If you believe a child has provided us
               with personal information, please contact us so we can remove it.
             </p>

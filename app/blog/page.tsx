@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { blogPosts } from "@/lib/blogPosts";
+import BrandName from "@/components/BrandName";
 
 export const metadata: Metadata = {
   title: "Blog — ClearBible.ai",
@@ -73,7 +74,7 @@ export default function BlogPage() {
             letterSpacing: "-0.02em",
           }}
         >
-          ClearBible.ai Blog
+          <BrandName /> Blog
         </h1>
         <p
           style={{

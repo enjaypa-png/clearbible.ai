@@ -989,7 +989,12 @@ export default function HowToUnderstandTheBible() {
       {/* Article body */}
       <div
         className="blog-article"
-        dangerouslySetInnerHTML={{ __html: ARTICLE_HTML }}
+        dangerouslySetInnerHTML={{
+          __html: ARTICLE_HTML.replace(
+            /ClearBible\.ai/g,
+            'ClearBible<span style="color:#7c5cfc">.ai</span>'
+          ),
+        }}
       />
     </>
   );

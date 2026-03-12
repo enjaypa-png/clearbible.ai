@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import BrandName from "@/components/BrandName";
 
 export const metadata = {
   title: "Refund Policy - ClearBible.ai",
@@ -43,7 +44,7 @@ export default function RefundsPage() {
           <section>
             <h2 className="text-[17px] font-semibold mb-2">Refund Policy</h2>
             <p>
-              ClearBible.ai subscriptions are non-refundable once a purchase has been completed. You may cancel your subscription at any time to prevent future billing.
+              <BrandName /> subscriptions are non-refundable once a purchase has been completed. You may cancel your subscription at any time to prevent future billing.
             </p>
           </section>
 

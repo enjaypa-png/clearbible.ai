@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getCurrentUser, signOut, supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import BrandName from "@/components/BrandName";
 
 interface Subscription {
   type: string;
@@ -360,7 +361,7 @@ export default function MorePage() {
           </h2>
           <div className="rounded-xl p-4" style={{ backgroundColor: "var(--card)", border: "0.5px solid var(--border)" }}>
             <p className="text-[14px] leading-relaxed mb-3" style={{ color: "var(--foreground)" }}>
-              ClearBible.ai helps you read, listen to, search, and finish the entire Bible without losing track of where you are or what you&apos;ve already read.
+              <BrandName /> helps you read, listen to, search, and finish the entire Bible without losing track of where you are or what you&apos;ve already read.
             </p>
             <p className="text-[13px] leading-relaxed mb-3" style={{ color: "var(--secondary)" }}>
               You can also ask ClearBible’s AI questions about the Bible and instantly see the verses that answer them.
@@ -372,7 +373,7 @@ export default function MorePage() {
               Bible text and audio are always free. We offer optional AI-powered features designed to help you retain what you read, understand the structure of each book, and return to Scripture with clarity instead of starting over.
             </p>
             <p className="text-[13px] leading-relaxed mb-3" style={{ color: "var(--secondary)" }}>
-              ClearBible.ai is an educational reading tool. It does not provide spiritual counseling, religious advice, or interpretive theology. Summaries describe what each book contains without interpretation.
+              <BrandName /> is an educational reading tool. It does not provide spiritual counseling, religious advice, or interpretive theology. Summaries describe what each book contains without interpretation.
             </p>
             <p className="text-[13px] font-medium" style={{ color: "var(--secondary)" }}>
               No ads. No opinions.
