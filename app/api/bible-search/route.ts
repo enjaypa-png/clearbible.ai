@@ -249,7 +249,7 @@ export async function POST(req: NextRequest) {
         messages: [
           { role: "system", content: ANSWER_SYSTEM_PROMPT + `\n\nIMPORTANT: You must respond in valid JSON format with two fields:
 1. "answer": your answer text (2-4 sentences)
-2. "relevant_indices": an array of 1 to 2 numbers (maximum 2) representing which verse indices (from the numbered list below) are the MOST relevant to the question. Pick only the best 1-2 verses that directly support your answer. Exclude any verse that was matched by coincidence (e.g., a verse containing the word "job" in its modern English sense when the question is about the biblical person Job).` },
+2. "relevant_indices": an array of the best 1 to 2 verse indices (from the numbered list below) that directly support your answer. Try to find 2; 1 is fine if only one qualifies. If none of the candidate verses genuinely support your answer, return an empty array [] — do not force a verse just to have something. A verse only qualifies if a Bible teacher would actually cite it when answering this exact question. If the verse only shares a word with the question but doesn't support the answer, exclude it.` },
           {
             role: "user",
             content: `Question: "${query}"\n\nHere are candidate Bible verses (some may not be relevant):\n${verseContext}\n\nRespond with JSON: {"answer": "...", "relevant_indices": [...]}`,
@@ -270,11 +270,13 @@ export async function POST(req: NextRequest) {
         const cleanJson = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
         const parsed = JSON.parse(cleanJson);
         answer = parsed.answer || null;
-        if (Array.isArray(parsed.relevant_indices) && parsed.relevant_indices.length > 0) {
-          const indices = new Set(parsed.relevant_indices.map(Number));
-          filteredVerses = verses.filter((_, i) => indices.has(i)).slice(0, 2);
-          // Fallback: if filtering removed everything, keep top 2 original
-          if (filteredVerses.length === 0) filteredVerses = verses.slice(0, 2);
+        if (Array.isArray(parsed.relevant_indices)) {
+          if (parsed.relevant_indices.length === 0) {
+            filteredVerses = [];
+          } else {
+            const indices = new Set(parsed.relevant_indices.map(Number));
+            filteredVerses = verses.filter((_, i) => indices.has(i)).slice(0, 2);
+          }
         }
       } catch {
         // If JSON parsing fails, use the raw text as the answer
