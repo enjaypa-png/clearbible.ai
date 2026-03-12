@@ -249,7 +249,7 @@ export async function POST(req: NextRequest) {
         messages: [
           { role: "system", content: ANSWER_SYSTEM_PROMPT + `\n\nIMPORTANT: You must respond in valid JSON format with two fields:
 1. "answer": your answer text (2-4 sentences)
-2. "relevant_indices": an array of 0 to 2 numbers representing which verse indices (from the numbered list below) are DIRECTLY relevant to the question. Be strict — only include a verse if it genuinely and obviously supports your answer. If none of the candidate verses actually support the answer, return an empty array []. Never include a verse just because it shares a word with the question. Ask yourself: "Would a Bible teacher actually cite this verse when answering this question?" If no, exclude it.` },
+2. "relevant_indices": an array of the best 1 to 2 verse indices (from the numbered list below) that directly support your answer. Try to find 2; 1 is fine if only one qualifies. If none of the candidate verses genuinely support your answer, return an empty array [] — do not force a verse just to have something. A verse only qualifies if a Bible teacher would actually cite it when answering this exact question. If the verse only shares a word with the question but doesn't support the answer, exclude it.` },
           {
             role: "user",
             content: `Question: "${query}"\n\nHere are candidate Bible verses (some may not be relevant):\n${verseContext}\n\nRespond with JSON: {"answer": "...", "relevant_indices": [...]}`,
