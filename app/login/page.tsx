@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { supabaseOAuth } from "@/lib/supabase-oauth";
+import BrandName from "@/components/BrandName";
 
 function needsOnboarding(user?: { user_metadata?: Record<string, unknown> }): boolean {
   if (typeof window === "undefined") return false;
@@ -199,7 +200,7 @@ function LoginForm() {
                   Sign In
                 </h1>
                 <p className="mt-2 text-[14px]" style={{ color: "var(--secondary)" }}>
-                  Welcome back to ClearBible.ai
+                  Welcome back to <BrandName />
                 </p>
               </div>
 

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { supabase, getCurrentUser } from "@/lib/supabase";
 import { startCheckout } from "@/lib/entitlements";
 import Footer from "@/components/Footer";
+import BrandName from "@/components/BrandName";
 
 interface Subscription {
   type: string;
@@ -355,7 +356,7 @@ export default function PricingPageClient() {
           className="text-center text-[12px] leading-relaxed mt-8"
           style={{ color: "var(--foreground-secondary)" }}
         >
-          All paid features are optional. ClearBible.ai is an educational reading tool.
+          All paid features are optional. <BrandName /> is an educational reading tool.
           AI-generated content describes what the biblical text contains without interpretation.
           See our{" "}
           <Link href="/refunds" className="underline" style={{ color: "var(--accent)" }}>

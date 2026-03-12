@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import BrandName from "@/components/BrandName";
 
 export default function Footer() {
   return (
@@ -44,7 +45,7 @@ export default function Footer() {
           className="text-center text-[12px] mt-1"
           style={{ color: "var(--foreground-secondary)" }}
         >
-          &copy; {new Date().getFullYear()} ClearBible.ai. All rights reserved.
+          &copy; {new Date().getFullYear()} <BrandName />. All rights reserved.
         </p>
       </div>
     </footer>

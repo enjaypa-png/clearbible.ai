@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/supabase";
 import HeroBibleSearch from "@/components/HeroBibleSearch";
+import BrandName from "@/components/BrandName";
 
 const FEATURES_FREE = [
   { icon: "📖", name: "Two Bible Versions", desc: "Read the King James Version and the Clear Bible Translation — both included free." },
@@ -855,7 +856,7 @@ export default function ClearBibleLanding() {
             lineHeight: 1.7,
             color: "#6a655e",
           }}>
-            ClearBible.ai is an educational reading tool. It does not provide spiritual counseling, religious advice, or interpretive theology. Summaries describe what each book contains in plain language.
+            <BrandName /> is an educational reading tool. It does not provide spiritual counseling, religious advice, or interpretive theology. Summaries describe what each book contains in plain language.
           </p>
         </div>
       </section>
@@ -961,7 +962,7 @@ export default function ClearBibleLanding() {
           support@clearbible.ai
         </p>
         <p style={{ fontSize: 12, color: "#ccc", marginTop: 4 }}>
-          &copy; {new Date().getFullYear()} ClearBible.ai
+          &copy; {new Date().getFullYear()} <BrandName />
         </p>
       </footer>
     </div>

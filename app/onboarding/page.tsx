@@ -3,6 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import BrandName from "@/components/BrandName";
+
+function renderTitle(title: string) {
+  if (!title.includes("ClearBible.ai")) return <>{title}</>;
+  const [before, after] = title.split("ClearBible.ai");
+  return <>{before}<BrandName />{after}</>;
+}
 
 const STEPS = [
   {
@@ -85,7 +92,7 @@ export default function OnboardingPage() {
           className="text-[22px] font-bold mb-3"
           style={{ color: "var(--foreground)", fontFamily: "Georgia, serif" }}
         >
-          {current.title}
+          {renderTitle(current.title)}
         </h1>
 
         <p
