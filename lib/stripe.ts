@@ -9,10 +9,7 @@ export function getStripe(): Stripe {
     if (!key) {
       throw new Error("STRIPE_SECRET_KEY is not configured");
     }
-    _stripe = new Stripe(key, {
-      apiVersion: "2026-01-28.clover",
-      typescript: true,
-    });
+    _stripe = new Stripe(key);
   }
   return _stripe;
 }
