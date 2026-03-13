@@ -50,7 +50,7 @@ export default function VerseActionBar({ onExplain, onApply, onNote, onShare, on
     },
     {
       key: "apply",
-      label: "Apply",
+      label: "Apply to My Life",
       icon: (
         <svg {...svg}>
           <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
