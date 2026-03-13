@@ -152,7 +152,7 @@ export default function ApplyVerseModal({
               className="text-[15px] font-semibold"
               style={{ color: "var(--foreground)" }}
             >
-              Apply This Verse
+              Apply Scripture to My Life
             </span>
           </div>
           <button
@@ -245,7 +245,7 @@ export default function ApplyVerseModal({
                   color: "#fff",
                 }}
               >
-                Apply This Verse
+                Apply Scripture to My Life
               </button>
             </>
           )}
