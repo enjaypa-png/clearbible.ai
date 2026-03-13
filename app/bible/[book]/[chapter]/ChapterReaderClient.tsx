@@ -14,6 +14,7 @@ import UpgradeNudge from "@/components/UpgradeNudge";
 import InstallPrompt from "@/components/InstallPrompt";
 import { HIGHLIGHT_COLORS, getHighlightBg } from "@/lib/highlightColors";
 import ReaderSearchBar from "@/components/ReaderSearchBar";
+import ApplyVerseModal from "@/components/ApplyVerseModal";
 
 
 interface Verse {
@@ -87,6 +88,11 @@ export default function ChapterReaderClient({
   const [explainTtsState, setExplainTtsState] = useState<ExplainTtsState>("idle");
   const explainAudioRef = useRef<HTMLAudioElement | null>(null);
   const explainAbortRef = useRef(false);
+
+  // Apply verse modal state
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [applyVerseRef, setApplyVerseRef] = useState("");
+  const [applyVerseText, setApplyVerseText] = useState("");
 
   // Explain entitlement
   const [hasExplainAccess, setHasExplainAccess] = useState<boolean | null>(null);
@@ -477,6 +483,14 @@ export default function ChapterReaderClient({
     } catch (err) {
       console.error("Failed to copy:", err);
     }
+  }
+
+  function handleApply(verseNum: number, verseTextContent: string) {
+    const reference = `${bookName} ${chapter}:${verseNum}`;
+    setApplyVerseRef(reference);
+    setApplyVerseText(verseTextContent);
+    setShowApplyModal(true);
+    handleCloseActions();
   }
 
   async function handleExplain(verseNum: number) {
@@ -1054,6 +1068,7 @@ export default function ChapterReaderClient({
                 {isActive && !showNoteEditor && !showColorPicker && explainStatus === "idle" && (
                   <VerseActionBar
                     onExplain={() => handleExplain(verse.verse)}
+                    onApply={() => handleApply(verse.verse, verse.text)}
                     onNote={handleOpenNoteEditor}
                     onShare={() => handleShare(verse.verse, verse.text)}
                     onHighlight={handleHighlightTap}
@@ -1363,6 +1378,12 @@ export default function ChapterReaderClient({
         <p className="text-center mt-8 text-[11px] tracking-wide" style={{ color: theme.secondary }}>{TRANSLATION_LABELS[settings.translation || "ct"].fullName.toUpperCase()}</p>
       </main>
     </div>
+    <ApplyVerseModal
+      isOpen={showApplyModal}
+      onClose={() => setShowApplyModal(false)}
+      verseReference={applyVerseRef}
+      verseText={applyVerseText}
+    />
     </>
   );
 }
