@@ -141,6 +141,17 @@ supabase/                   # Migrations, seeds, SCHEMA.md
 - **Zustand only for explanations:** Everything else uses React Context or localStorage.
 - **Path alias:** `@/*` maps to project root.
 
+## Logo
+
+The app logo is defined in **`components/Logo.tsx`** — a reusable React component that renders an inline SVG.
+
+**Rules:**
+- **ALWAYS use `<Logo />` for the logo.** Import from `@/components/Logo`.
+- **NEVER use `<img src="/clearbible-logo.svg">`.** SVGs loaded via `<img>` tags are sandboxed and cannot access page fonts. The logo uses `<text>` elements that require page fonts (DM Sans / Inter) to render — without them, only the book icon shows and the "ClearBible.ai" text is invisible.
+- To change the logo, edit `components/Logo.tsx` only. All instances update automatically.
+- The `<Logo />` component accepts `height` (default 40), `style`, and `className` props.
+- The file `public/clearbible-logo.svg` still exists for non-React contexts (e.g., `og-image`, email) but must NOT be used in React components.
+
 ## Do Not Change Without Approval
 
 These files/areas require explicit approval before modification:

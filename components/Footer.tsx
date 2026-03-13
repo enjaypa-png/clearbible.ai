@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BrandName from "@/components/BrandName";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
   return (
@@ -12,13 +13,7 @@ export default function Footer() {
     >
       <div className="max-w-lg mx-auto">
         <div className="flex justify-center mb-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/clearbible-logo.svg"
-            alt="ClearBible.ai Logo"
-            className="logo"
-            style={{ height: 40, width: "auto" }}
-          />
+          <Logo />
         </div>
         <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px]">
           <Link href="/pricing" style={{ color: "var(--accent)" }} className="hover:underline">

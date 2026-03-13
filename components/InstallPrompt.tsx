@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Logo from "@/components/Logo";
 
 const DISMISS_KEY = "pwa_install_dismissed_at";
 const INSTALLED_KEY = "pwa_installed";
@@ -112,13 +113,7 @@ export default function InstallPrompt() {
           style={{ borderBottom: "0.5px solid var(--border)" }}
         >
           <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/clearbible-logo.svg"
-              alt="ClearBible.ai Logo"
-              className="logo"
-              style={{ height: 36, width: "auto" }}
-            />
+            <Logo height={36} />
             <div>
               <p className="text-[14px] font-bold" style={{ color: "var(--foreground)" }}>
                 Add to Home Screen

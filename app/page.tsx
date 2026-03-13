@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/supabase";
 import HeroBibleSearch from "@/components/HeroBibleSearch";
 import BrandName from "@/components/BrandName";
+import Logo from "@/components/Logo";
 
 export default function ClearBibleLanding() {
   const router = useRouter();
@@ -107,17 +108,7 @@ export default function ClearBibleLanding() {
         <div style={{ position: "relative", zIndex: 1, maxWidth: 780, margin: "0 auto" }}>
           {/* Logo */}
           <div style={{ margin: "0 auto 36px", animation: "fadeUp 0.5s ease both", textAlign: "center" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/clearbible-logo.svg"
-              alt="ClearBible.ai Logo"
-              className="logo"
-              style={{
-                height: 96,
-                width: "auto",
-                display: "inline-block",
-              }}
-            />
+            <Logo height={96} style={{ display: "inline-block" }} />
           </div>
 
           {/* Main headline: UNDERSTAND · REMEMBER · APPLY */}
@@ -895,13 +886,7 @@ export default function ClearBibleLanding() {
         background: "#fff",
       }}>
         <div style={{ marginBottom: 16 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/clearbible-logo.svg"
-            alt="ClearBible.ai Logo"
-            className="logo"
-            style={{ margin: "0 auto 12px", display: "block", height: 40, width: "auto" }}
-          />
+          <Logo style={{ margin: "0 auto 12px", display: "block" }} />
         </div>
         <div style={{
           display: "flex",

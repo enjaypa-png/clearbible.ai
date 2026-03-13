@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import Logo from "@/components/Logo";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -41,13 +42,7 @@ export default function Navigation() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/clearbible-logo.svg"
-            alt="ClearBible.ai Logo"
-            className="logo"
-            style={{ height: 40, width: "auto" }}
-          />
+          <Logo />
         </Link>
 
         {/* Center nav links */}
