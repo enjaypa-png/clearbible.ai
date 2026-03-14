@@ -68,12 +68,16 @@ export default function ClearBibleLanding() {
           transform: translateX(-50%);
           width: 800px;
           height: 800px;
-          background: radial-gradient(circle, rgba(124,92,252,0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(124,92,252,0.12) 0%, transparent 70%);
           pointer-events: none;
         }
         .cb-hero-inner {
           position: relative;
           z-index: 1;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+        .cb-hero-inner .cb-hero-text {
           max-width: 720px;
           margin: 0 auto;
         }
@@ -760,17 +764,19 @@ export default function ClearBibleLanding() {
       {/* ═══════════════════ HERO ═══════════════════ */}
       <section className="cb-hero">
         <div className="cb-hero-inner">
-          <div className="cb-hero-logo">
-            <Logo variant="hero" height={120} style={{ display: "inline-block" }} />
+          <div className="cb-hero-text">
+            <div className="cb-hero-logo">
+              <Logo variant="hero" height={120} style={{ display: "inline-block" }} />
+            </div>
+            <h1>
+              The <span className="purple">Bible</span> — Finally Easy<br />to Understand
+            </h1>
+            <p className="cb-sub">
+              Read the Bible with AI explanations, clear summaries, and practical guidance for your life.
+            </p>
           </div>
-          <h1>
-            The <span className="purple">Bible</span> — Finally Easy<br />to Understand
-          </h1>
-          <p className="cb-sub">
-            Read the Bible with AI explanations, clear summaries, and practical guidance for your life.
-          </p>
           <HeroBibleSearch />
-          <div className="cb-hero-ctas">
+          <div className="cb-hero-ctas" style={{ justifyContent: "center" }}>
             <Link href="/signup" className="cb-btn-primary">
               Start Reading Free
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -779,7 +785,7 @@ export default function ClearBibleLanding() {
               See How It Works
             </Link>
           </div>
-          <p className="cb-hero-note">No credit card required &middot; Free forever plan available</p>
+          <p className="cb-hero-note" style={{ textAlign: "center" }}>No credit card required &middot; Free forever plan available</p>
         </div>
       </section>
 
