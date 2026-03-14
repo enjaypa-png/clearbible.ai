@@ -233,11 +233,7 @@ export async function POST(req: NextRequest) {
       };
     });
 
-    // 5) Generate an AI answer AND filter relevant verses
-    const verseContext = verses
-      .map((v, i) => `[${i}] ${v.reference}: "${v.text}"`)
-      .join("\n\n");
-
+    // 5) Generate an AI answer with cited verse references
     const answerRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -248,11 +244,14 @@ export async function POST(req: NextRequest) {
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: ANSWER_SYSTEM_PROMPT + `\n\nIMPORTANT: You must respond in valid JSON format with two fields:
-1. "answer": your answer text (2-4 sentences)
-2. "relevant_indices": an array of the best 1 to 2 verse indices (from the numbered list below) that directly support your answer. Try to find 2; 1 is fine if only one qualifies. If none of the candidate verses genuinely support your answer, return an empty array [] — do not force a verse just to have something. A verse only qualifies if a Bible teacher would actually cite it when answering this exact question. If the verse only shares a word with the question but doesn't support the answer, exclude it.` },
+1. "answer": your answer text (2-4 sentences). Reference specific verses in your answer.
+2. "cited_verses": an array of the 1-3 most relevant verse references you cited or would cite for this answer. Each entry must be an object with "book" (full book name, e.g. "Genesis", "1 Corinthians"), "chapter" (number), and "verse" (number). Only include verses that a Bible teacher would actually cite when answering this exact question.
+
+Example response:
+{"answer": "Moses had one primary wife mentioned in the Bible, Zipporah, who was a Midianite (Exodus 2:21). There is also a reference to a Cushite woman (Numbers 12:1).", "cited_verses": [{"book": "Exodus", "chapter": 2, "verse": 21}, {"book": "Numbers", "chapter": 12, "verse": 1}]}` },
           {
             role: "user",
-            content: `Question: "${query}"\n\nHere are candidate Bible verses (some may not be relevant):\n${verseContext}\n\nRespond with JSON: {"answer": "...", "relevant_indices": [...]}`,
+            content: `Question: "${query}"`,
           },
         ],
         max_tokens: 500,
@@ -261,32 +260,73 @@ export async function POST(req: NextRequest) {
     });
 
     let answer: string | null = null;
-    let filteredVerses = verses;
+    let citedVerses: Array<{ book: string; chapter: number; verse: number }> = [];
     if (answerRes.ok) {
       const answerData = await answerRes.json();
       const raw = answerData.choices?.[0]?.message?.content?.trim() || "";
       try {
-        // Try to parse as JSON
         const cleanJson = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
         const parsed = JSON.parse(cleanJson);
         answer = parsed.answer || null;
-        if (Array.isArray(parsed.relevant_indices)) {
-          if (parsed.relevant_indices.length === 0) {
-            filteredVerses = [];
-          } else {
-            const indices = new Set(parsed.relevant_indices.map(Number));
-            filteredVerses = verses.filter((_, i) => indices.has(i)).slice(0, 2);
-          }
+        if (Array.isArray(parsed.cited_verses)) {
+          citedVerses = parsed.cited_verses
+            .filter((v: { book?: string; chapter?: number; verse?: number }) => v.book && v.chapter && v.verse)
+            .slice(0, 3);
         }
       } catch {
-        // If JSON parsing fails, use the raw text as the answer
         answer = raw;
       }
     } else {
       console.error("[bible-search] GPT answer error:", answerRes.status);
     }
 
-    return NextResponse.json({ answer, verses: filteredVerses });
+    // 6) Fetch the exact cited verses from the database
+    let finalVerses: typeof verses = [];
+    if (citedVerses.length > 0) {
+      // Resolve book names to IDs
+      const citedBookNames = Array.from(new Set(citedVerses.map((v) => v.book)));
+      const { data: citedBooksData } = await supabase
+        .from("books")
+        .select("id, name, slug")
+        .in("name", citedBookNames);
+
+      const citedBookMap = new Map<string, BookRow>();
+      if (citedBooksData) {
+        for (const b of citedBooksData as BookRow[]) {
+          citedBookMap.set(b.name.toLowerCase(), b);
+        }
+      }
+
+      for (const cv of citedVerses) {
+        const book = citedBookMap.get(cv.book.toLowerCase());
+        if (!book) continue;
+
+        // Fetch the verse text, preferring CT translation
+        const { data: verseRows } = await supabase
+          .from("verses")
+          .select("text, translation")
+          .eq("book_id", book.id)
+          .eq("chapter", cv.chapter)
+          .eq("verse", cv.verse);
+
+        if (verseRows && verseRows.length > 0) {
+          // Prefer CT translation
+          const ctRow = verseRows.find((r: { translation?: string }) => r.translation === "ct");
+          const bestRow = ctRow || verseRows[0];
+          finalVerses.push({
+            book_id: book.id,
+            book_name: book.name,
+            book_slug: book.slug,
+            chapter: cv.chapter,
+            verse: cv.verse,
+            text: bestRow.text,
+            reference: `${book.name} ${cv.chapter}:${cv.verse}`,
+          });
+        }
+      }
+    }
+
+    return NextResponse.json({ answer, verses: finalVerses });
   } catch (err) {
     console.error("[bible-search] Unexpected error:", err);
     return NextResponse.json(

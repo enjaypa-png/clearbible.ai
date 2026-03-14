@@ -187,6 +187,8 @@ const AISearchInput = forwardRef<AISearchInputRef, AISearchInputProps>(
             resize: none;
             overflow-y: auto;
             max-height: 120px;
+            -webkit-user-select: text;
+            user-select: text;
           }
           .ai-search-bar-textarea:focus,
           .ai-search-bar-textarea:focus-visible {
