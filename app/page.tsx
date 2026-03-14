@@ -769,10 +769,10 @@ export default function ClearBibleLanding() {
               <Logo variant="hero" height={120} style={{ display: "inline-block" }} />
             </div>
             <h1>
-              The <span className="purple">Bible</span> — Finally Easy<br />to Understand
+              Understand the Bible. Remember it. <span className="purple">Apply it.</span>
             </h1>
             <p className="cb-sub">
-              Read the Bible with AI explanations, clear summaries, and practical guidance for your life.
+              AI explains every verse, summarizes every chapter, and helps you apply Scripture to real life.
             </p>
           </div>
           <HeroBibleSearch />
